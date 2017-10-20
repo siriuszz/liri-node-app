@@ -9,7 +9,8 @@ var fs = require("fs");
 // User inputs
 var action = process.argv[2];
 var selection = process.argv[3];
-var movie = "";
+var song = selection;
+var movie = selection;
 
 
 // Use input to determine which action to take
@@ -55,7 +56,6 @@ function getTweets() {
 
 
 // Retrieve song info from Spotify
-// =============== not working ===================
 function getSong() {
 
     var spotifySong = new spotify({
@@ -63,11 +63,18 @@ function getSong() {
         secret: spotifyKeys.secret
     });
 
-    spotifySong.search({ type: 'track', query: selection, limit: 1 }, function(err, data) {
+    if (selection === undefined) {
+        song = "The Sign";
+    }
+
+    spotifySong.search({ type: 'track', query: song, limit: 1 }, function(err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
         } else {
-            console.log(data.tracks.items[0].name + data.tracks.items[0].name);
+            console.log("Artist: " + data.tracks.items[0].artists[0].name +
+                "\nSong: " + data.tracks.items[0].name +
+                "\nPreview link: " + data.tracks.items[0].preview_url +
+                "\nAlbum: " + data.tracks.items[0].album.name);
         }
 
     });
@@ -76,11 +83,17 @@ function getSong() {
 
 // Retrieve movie info from OMDB
 function getMovie() {
-    var queryUrl = "http://www.omdbapi.com/?t=" + selection + "&y=&plot=short&apikey=40e9cece";
+    if (selection === undefined) {
+        movie = "Mr. Nobody";
+    }
+
+    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=40e9cece";
 
     request(queryUrl, function(error, response, body) {
 
-        if (!error && response.statusCode === 200) {
+        if (error) {
+            return console.log(error);
+        } else if (!error && response.statusCode === 200) {
             console.log("Title: " + JSON.parse(body).Title +
             "\nRelease Year: " + JSON.parse(body).Year +
             "\nRating: " + JSON.parse(body).Rated +
@@ -96,7 +109,7 @@ function getMovie() {
 // Get text from random.txt
 //=======================not working==============================
 function getText() {
-    fs.readFile("random.text", "utf-8", function (error, data) {
+    fs.readFile("random.txt", "utf-8", function (error, data) {
         if(error) {
             console.log(error);
         } else {
