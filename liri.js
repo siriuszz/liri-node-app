@@ -107,15 +107,24 @@ function getMovie() {
 
 
 // Get text from random.txt
-//=======================not working==============================
 function getText() {
-    fs.readFile("random.txt", "utf-8", function (error, data) {
+    fs.readFile("random.txt", "utf8", function (error, data) {
         if(error) {
             console.log(error);
         } else {
-            var fromFile = data.split(", ");
+            var fromFile = data.split(",");
             action = fromFile[0];
             selection = fromFile[1];
+
+            // console.log(action);
+            // console.log(selection);
+            if (action === "spotify-this-song") {
+                song = selection;
+                getSong();
+            } else if (action === "movie-this") {
+                movie = selection;
+                getMovie();
+            }
         }
     })
 }
