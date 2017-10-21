@@ -64,7 +64,7 @@ function getSong() {
     });
 
     if (selection === undefined) {
-        song = "The Sign";
+        song = "Ace of Base";
     }
 
     spotifySong.search({ type: 'track', query: song, limit: 1 }, function(err, data) {
